@@ -16,8 +16,6 @@ import { v4 as uuidv4 } from "uuid";
 import { emailRegex, height, pwRegex, width } from "../common/util";
 import { FontAwesome5, AntDesign, Entypo, Feather } from "@expo/vector-icons";
 import Swiper from "react-native-swiper";
-import { async } from "@firebase/util";
-import { listImagePath } from "../assets/imgPath";
 
 /* 리팩토링 예정 ㅠㅠㅠㅠㅠ*/
 export default function Login({ navigation: { goBack, setOptions } }) {
@@ -160,7 +158,7 @@ export default function Login({ navigation: { goBack, setOptions } }) {
     // 회원가입 요청
     createUserWithEmailAndPassword(auth, joinEmail, joinPw)
       .then(async (response) => {
-        const photo = await uploadImage(response.user.uid);
+        const photo = await uploadImage();
         await updateProfile(auth.currentUser, {
           photoURL: photo,
           displayName: joinNickName,
@@ -179,12 +177,6 @@ export default function Login({ navigation: { goBack, setOptions } }) {
         }
         setOpacity(1);
       });
-  };
-
-  const handleLogout = () => {
-    signOut(auth).then(() => {
-      goBack();
-    });
   };
 
   useEffect(() => {
@@ -239,12 +231,7 @@ export default function Login({ navigation: { goBack, setOptions } }) {
       >
         {component.map((item, index) => {
           return (
-            <Page
-              color={item["backColor"]}
-              key={index}
-              opacity={opacity}
-              image={listImagePath["iwanthis"]}
-            >
+            <Page color={item["backColor"]} key={index} opacity={opacity}>
               <BackCircle style={{ backgroundColor: item["innerColor"] }} />
 
               {index === 0 ? ( // 로그인 페이지

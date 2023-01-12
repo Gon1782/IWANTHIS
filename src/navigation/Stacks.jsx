@@ -7,20 +7,25 @@ import Login from "../screen/Login";
 import Header from "../components/Header";
 import { imagePath, listImagePath } from "../assets/imgPath";
 import { Text, Image, TouchableOpacity, View, Alert } from "react-native";
+import { useEffect, useState } from "react";
 import MyPage from "../screen/MyPage";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../common/firebase";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { signOut } from "firebase/auth/react-native";
 import EditList from "../screen/EditList";
-import { useSelector } from 'react-redux';
+import { isLogin, notLogin } from "../redux/modules/loginSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const NativeStack = createNativeStackNavigator();
 
 const Stacks = () => {
   const { navigate } = useNavigation();
-  const check = useSelector(state => state.login.isLogin)
-  const imagePosition = "a";
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    // 유저 로그인 여부 가져오기
+    auth.onAuthStateChanged((user) => setUser(user));
+  });
 
   //로그아웃 누르면 로그아웃되는 코드
   const logOut = () => {
@@ -57,7 +62,7 @@ const Stacks = () => {
           return (
             <>
               <TouchableOpacity style={{ marginRight: 2 }}>
-                {check ? ( // 로그아웃 및 프로필 사진 아이콘
+                {!!user ? ( // 로그아웃 및 프로필 사진 아이콘
                   <View
                     style={{ flexDirection: "row", justifyContent: "center" }}
                   >
@@ -76,8 +81,8 @@ const Stacks = () => {
                       <View style={{ marginLeft: 10 }}>
                         <Image
                           source={
-                            check
-                              ? { uri: auth.currentUser.photoURL }
+                            user.photoURL === ""
+                              ? { uri: user.photoURL } // 로그인 했는데 프로필사진 없을때
                               : listImagePath["defaultimage"]
                           }
                           style={{ height: 40, width: 40, borderRadius: 40 }}

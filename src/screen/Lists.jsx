@@ -33,8 +33,8 @@ const Lists = ({
   const [lists, setLists] = useState([]);
   const scrollA = useRef(new Animated.Value(0)).current;
   const [order, setOrder] = useState(0);
-  const isDark = useColorScheme() === "dark"
-  const backColor = isDark ? "black" : "white"
+  const isDark = useColorScheme() === "dark";
+  const backColor = isDark ? "black" : "white";
 
   const { isLoading, isError, data, error } = useQuery([category], getLists);
 
@@ -95,7 +95,7 @@ const Lists = ({
         <Feather
           name="pen-tool"
           size={24}
-          color="black"
+          color={color["fontColor"]}
           style={{ padding: 10 }}
         />
       </TouchableOpacity>
@@ -121,7 +121,7 @@ const Lists = ({
           />
         </View>
         {/* 흰색 배경 */}
-        <ListBackground style={{backgroundColor: backColor }}>
+        <ListBackground style={{ backgroundColor: backColor }}>
           <View
             style={{
               justifyContent: "flex-end",
